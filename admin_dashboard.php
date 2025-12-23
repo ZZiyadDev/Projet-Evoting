@@ -1,10 +1,8 @@
 <?php
 // File: admin_dashboard.php
-session_start();
-
-// Security Check: Kick out if not Admin
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
-    header("Location: index.php");
+include('includes/auth_session.php');
+if ($_SESSION['role'] !== 'admin') {
+    header("Location: index.php"); // Redirect non-admins
     exit();
 }
 ?>
@@ -12,27 +10,74 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
 <!DOCTYPE html>
 <html>
 <head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <title>Admin Dashboard</title>
-    <style>
-        body { font-family: sans-serif; padding: 20px; }
-        ul { list-style-type: square; }
-        li { margin: 10px 0; }
-        a { text-decoration: none; color: #0000EE; }
-        a:hover { text-decoration: underline; }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 </head>
-<body>
-    <h1>Admin Panel</h1>
-    <p>Welcome, System Administrator | <a href="logout.php">Logout</a></p>
-    <hr>
+<body class="bg-light">
 
-    <h3>Actions:</h3>
-    <ul>
-        <li><a href="results.php"><strong>View Election Results</strong></a></li>
-        <li>Manage Election</li>
-        <li><a href="create_candidate.php"><strong>Create Candidate Account</strong></a></li>
-        <li>Import Voter List</li>
-    </ul>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="admin_dashboard.php">🗳️ E-Voting Admin</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="logout.php">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>Admin Dashboard</h2>
+            <p class="lead">Welcome, <?php echo htmlspecialchars($_SESSION['name']); ?>!</p>
+        </div>
+        <hr>
+
+        <h4>Election Management</h4>
+        <div class="row g-3 mt-2">
+            <div class="col-md-4">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <i class="bi bi-people-fill fs-1 text-primary"></i>
+                        <h5 class="card-title mt-2">Manage Parties</h5>
+                        <p class="card-text">Add, edit, or remove political parties from the system.</p>
+                        <a href="admin_parties.php" class="btn btn-primary">Go to Parties</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <i class="bi bi-geo-alt-fill fs-1 text-warning"></i>
+                        <h5 class="card-title mt-2">Manage Districts</h5>
+                        <p class="card-text">Define the electoral districts for the election.</p>
+                        <a href="admin_districts.php" class="btn btn-warning">Go to Districts</a>
+                    </div>
+                </div>
+            </div>
+             <div class="col-md-4">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <i class="bi bi-person-plus-fill fs-1 text-success"></i>
+                        <h5 class="card-title mt-2">Create Candidate</h5>
+                        <p class="card-text">Create user accounts for new candidates running in the election.</p>
+                        <a href="create_candidate.php" class="btn btn-success">Create Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <i class="bi bi-bar-chart-line-fill fs-1 text-info"></i>
+                        <h5 class="card-title mt-2">View Results</h5>
+                        <p class="card-text">See the current vote counts and election results.</p>
+                        <a href="results.php" class="btn btn-info">View Results</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>

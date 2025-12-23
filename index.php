@@ -6,21 +6,26 @@ require('includes/db.php');
 $error = "";
 
 if (isset($_POST['submit'])) {
-    $username = $_POST['username'];
+    $username = mysqli_real_escape_string($conn, $_POST['username']);
     $password = $_POST['password']; 
 
-    $query = "SELECT * FROM users WHERE username='$username' AND password='$password'";
+    $query = "SELECT * FROM users WHERE username='$username'";
     $result = mysqli_query($conn, $query);
     
     if (mysqli_num_rows($result) == 1) {
         $row = mysqli_fetch_assoc($result);
-        $_SESSION['user_id'] = $row['id'];
-        $_SESSION['role'] = $row['role'];
-        $_SESSION['name'] = $row['full_name'];
+        if (password_verify($password, $row['password'])) {
+            $_SESSION['user_id'] = $row['id'];
+            $_SESSION['role'] = $row['role'];
+            $_SESSION['name'] = $row['full_name'];
 
-        if ($row['role'] == 'admin') header("Location: admin_dashboard.php");
-        elseif ($row['role'] == 'candidate') header("Location: cand_dashboard.php");
-        else header("Location: vote.php");
+            if ($row['role'] == 'admin') header("Location: admin_dashboard.php");
+            elseif ($row['role'] == 'candidate') header("Location: cand_dashboard.php");
+            else header("Location: vote.php");
+            exit(); // It's good practice to exit after a header redirect
+        } else {
+            $error = "<div class='alert alert-danger'>Invalid Username or Password</div>";
+        }
     } else {
         $error = "<div class='alert alert-danger'>Invalid Username or Password</div>";
     }
