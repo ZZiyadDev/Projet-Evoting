@@ -15,41 +15,58 @@ $districts_result = mysqli_query($conn, "SELECT * FROM electoral_districts ORDER
 
 // Handle Form Submission
 if (isset($_POST['add_candidate'])) {
-    $fullname = mysqli_real_escape_string($conn, $_POST['fullname']);
-    $username = mysqli_real_escape_string($conn, $_POST['username']);
-    $password = mysqli_real_escape_string($conn, $_POST['password']);
+    $fullname = $_POST['fullname'];
+    $username = $_POST['username'];
+    $password = $_POST['password'];
     $party_id = (int)$_POST['party_id'];
     $district_id = (int)$_POST['district_id'];
+    $rank = (int)$_POST['rank'];
     
     // Validate inputs
-    if (empty($fullname) || empty($username) || empty($password) || empty($party_id) || empty($district_id)) {
-        $message = "<div class='alert alert-danger'>All fields are required.</div>";
+    if (empty($fullname) || empty($username) || empty($password) || empty($party_id) || empty($district_id) || $rank <= 0) {
+        $message = "<div class='alert alert-danger'>All fields are required, and rank must be a positive number.</div>";
     } else {
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        mysqli_begin_transaction($conn);
+        try {
+            // Check if username exists
+            $stmt = mysqli_prepare($conn, "SELECT id FROM users WHERE username = ?");
+            mysqli_stmt_bind_param($stmt, "s", $username);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_store_result($stmt);
+            if (mysqli_stmt_num_rows($stmt) > 0) {
+                throw new Exception("This username is already taken.");
+            }
+            mysqli_stmt_close($stmt);
 
-        // A. Insert into USERS table
-        $sql_user = "INSERT INTO users (username, password, full_name, role, district_id) 
-                     VALUES ('$username', '$hashed_password', '$fullname', 'candidate', '$district_id')";
-        
-        if ($conn->query($sql_user) === TRUE) {
-            $new_user_id = $conn->insert_id;
+            // A. Insert into USERS table
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+            $role = 'candidate';
+            $sql_user = "INSERT INTO users (username, password, full_name, role, district_id) VALUES (?, ?, ?, ?, ?)";
+            $stmt = mysqli_prepare($conn, $sql_user);
+            mysqli_stmt_bind_param($stmt, "ssssi", $username, $hashed_password, $fullname, $role, $district_id);
+            if (!mysqli_stmt_execute($stmt)) {
+                throw new Exception("Error creating user account: " . mysqli_stmt_error($stmt));
+            }
+            
+            $new_user_id = mysqli_insert_id($conn);
+            mysqli_stmt_close($stmt);
 
             // B. Insert into CANDIDATES table
-            $sql_cand = "INSERT INTO candidates (user_id, party_id, district_id) VALUES ('$new_user_id', '$party_id', '$district_id')";
-            
-            if ($conn->query($sql_cand) === TRUE) {
-                $message = "<div class='alert alert-success'>Candidate '$fullname' created successfully!</div>";
-            } else {
-                // Clean up user if candidate creation fails
-                $conn->query("DELETE FROM users WHERE id = $new_user_id");
-                $message = "<div class='alert alert-danger'>Error creating candidate profile: " . $conn->error . "</div>";
+            $sql_cand = "INSERT INTO candidates (user_id, party_id, district_id, rank) VALUES (?, ?, ?, ?)";
+            $stmt = mysqli_prepare($conn, $sql_cand);
+            mysqli_stmt_bind_param($stmt, "iiii", $new_user_id, $party_id, $district_id, $rank);
+            if (!mysqli_stmt_execute($stmt)) {
+                 throw new Exception("Error creating candidate profile: " . mysqli_stmt_error($stmt));
             }
-        } else {
-            if ($conn->errno == 1062) { // Duplicate entry for username
-                 $message = "<div class='alert alert-danger'>Error: This username is already taken.</div>";
-            } else {
-                 $message = "<div class='alert alert-danger'>Error creating user account: " . $conn->error . "</div>";
-            }
+            mysqli_stmt_close($stmt);
+
+            // If all good, commit
+            mysqli_commit($conn);
+            $message = "<div class='alert alert-success'>Candidate '" . htmlspecialchars($fullname) . "' created successfully!</div>";
+
+        } catch (Exception $e) {
+            mysqli_rollback($conn);
+            $message = "<div class='alert alert-danger'>" . $e->getMessage() . "</div>";
         }
     }
 }
@@ -60,6 +77,7 @@ if (isset($_POST['add_candidate'])) {
 <head>
     <title>Create New Candidate</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/dashboard.css">
 </head>
 <body class="bg-light">
 
@@ -99,27 +117,35 @@ if (isset($_POST['add_candidate'])) {
                                 </div>
                             </div>
                             <hr>
-                             <div class="row">
-                                <div class="col-md-6 mb-3">
+                             <div class="row align-items-end">
+                                <div class="col-md-5 mb-3">
                                     <label class="form-label">Political Party</label>
                                     <select name="party_id" class="form-select" required>
                                         <option value="">-- Select Party --</option>
-                                        <?php while($p = mysqli_fetch_assoc($parties_result)) {
+                                        <?php 
+                                        mysqli_data_seek($parties_result, 0);
+                                        while($p = mysqli_fetch_assoc($parties_result)) {
                                             echo "<option value='{$p['id']}'>".htmlspecialchars($p['name'])."</option>";
                                         } ?>
                                     </select>
                                 </div>
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-4 mb-3">
                                     <label class="form-label">Electoral District</label>
                                      <select name="district_id" class="form-select" required>
                                         <option value="">-- Select District --</option>
-                                        <?php while($d = mysqli_fetch_assoc($districts_result)) {
+                                        <?php 
+                                        mysqli_data_seek($districts_result, 0);
+                                        while($d = mysqli_fetch_assoc($districts_result)) {
                                             echo "<option value='{$d['id']}'>".htmlspecialchars($d['name'])."</option>";
                                         } ?>
                                     </select>
                                 </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="form-label">List Rank</label>
+                                    <input type="number" name="rank" class="form-control" required value="1" min="1">
+                                </div>
                             </div>
-                            <div class="d-grid">
+                            <div class="d-grid mt-3">
                                 <button type="submit" name="add_candidate" class="btn btn-success">Add Candidate</button>
                             </div>
                         </form>

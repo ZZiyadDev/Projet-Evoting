@@ -15,10 +15,13 @@ if (isset($_GET['party_id'])) {
     $party_id = (int)$_GET['party_id'];
     $user_id = $_SESSION['user_id'];
 
-    // Get user's voting status and district
-    $user_sql = "SELECT has_voted, district_id FROM users WHERE id = '$user_id'";
-    $user_result = mysqli_query($conn, $user_sql);
+    // Get user's voting status and district using a prepared statement
+    $stmt = mysqli_prepare($conn, "SELECT has_voted, district_id FROM users WHERE id = ?");
+    mysqli_stmt_bind_param($stmt, "i", $user_id);
+    mysqli_stmt_execute($stmt);
+    $user_result = mysqli_stmt_get_result($stmt);
     $user_data = mysqli_fetch_assoc($user_result);
+    mysqli_stmt_close($stmt);
 
     if ($user_data && $user_data['has_voted'] == 0 && !empty($user_data['district_id'])) {
         $district_id = $user_data['district_id'];
@@ -27,20 +30,27 @@ if (isset($_GET['party_id'])) {
         mysqli_begin_transaction($conn);
 
         try {
-            // Use INSERT ... ON DUPLICATE KEY UPDATE to handle the vote count
+            // Use INSERT ... ON DUPLICATE KEY UPDATE with a prepared statement
             $vote_sql = "INSERT INTO party_votes (party_id, district_id, vote_count) 
-                         VALUES ('$party_id', '$district_id', 1)
+                         VALUES (?, ?, 1)
                          ON DUPLICATE KEY UPDATE vote_count = vote_count + 1";
+            $stmt = mysqli_prepare($conn, $vote_sql);
+            mysqli_stmt_bind_param($stmt, "ii", $party_id, $district_id);
             
-            if (!mysqli_query($conn, $vote_sql)) {
-                throw new Exception(mysqli_error($conn));
+            if (!mysqli_stmt_execute($stmt)) {
+                throw new Exception(mysqli_stmt_error($stmt));
             }
+            mysqli_stmt_close($stmt);
 
-            // Mark user as having voted
-            $mark_voted_sql = "UPDATE users SET has_voted = 1 WHERE id = '$user_id'";
-            if (!mysqli_query($conn, $mark_voted_sql)) {
-                 throw new Exception(mysqli_error($conn));
+            // Mark user as having voted using a prepared statement
+            $mark_voted_sql = "UPDATE users SET has_voted = 1 WHERE id = ?";
+            $stmt = mysqli_prepare($conn, $mark_voted_sql);
+            mysqli_stmt_bind_param($stmt, "i", $user_id);
+
+            if (!mysqli_stmt_execute($stmt)) {
+                 throw new Exception(mysqli_stmt_error($stmt));
             }
+            mysqli_stmt_close($stmt);
 
             // If all queries were successful, commit the transaction
             mysqli_commit($conn);

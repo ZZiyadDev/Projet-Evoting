@@ -1,0 +1,63 @@
+html, body.login-page {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif; /* A modern font, will fallback to sans-serif */
+}
+
+/* Left side with background and info */
+.login-info-side {
+    background-image: url("../images/pattern.jpg");
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+}
+
+.login-info-content h1 {
+    font-weight: bold;
+    font-size: 3rem;
+}
+
+/* Right side with the form */
+.login-form-side {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #f8f9fa;
+}
+
+.login-form-container {
+    width: 100%;
+    max-width: 450px;
+}
+
+.login-form-side .card {
+    border-radius: 1rem;
+}
+
+.form-control-lg {
+    padding: 1rem 1.25rem;
+    font-size: 1rem;
+}
+
+.btn-lg {
+    padding: 0.75rem 1.25rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.card-footer a {
+    text-decoration: none;
+    font-weight: bold;
+    color: #dc3545; /* Red to match the button */
+}
+
+.card-footer a:hover {
+    text-decoration: underline;
+}
+
+.login-logo {
+    max-width: 150px;
+    height: auto;
+}

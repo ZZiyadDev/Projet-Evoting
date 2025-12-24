@@ -6,11 +6,13 @@ require('includes/db.php');
 $error = "";
 
 if (isset($_POST['submit'])) {
-    $username = mysqli_real_escape_string($conn, $_POST['username']);
+    $username = $_POST['username'];
     $password = $_POST['password']; 
 
-    $query = "SELECT * FROM users WHERE username='$username'";
-    $result = mysqli_query($conn, $query);
+    $stmt = mysqli_prepare($conn, "SELECT * FROM users WHERE username = ?");
+    mysqli_stmt_bind_param($stmt, "s", $username);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
     
     if (mysqli_num_rows($result) == 1) {
         $row = mysqli_fetch_assoc($result);
@@ -37,34 +39,44 @@ if (isset($_POST['submit'])) {
 <head>
     <title>E-Voting Login</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/evoting/assets/css/style.css" rel="stylesheet">
 </head>
-<body class="bg-light">
+<body class="login-page">
 
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6 col-lg-4">
-                <div class="card shadow-sm mt-5">
-                    <div class="card-body p-4">
-                        <h3 class="text-center mb-4">Secure Login 🔒</h3>
-                        
-                        <?php echo $error; ?>
+    <div class="container-fluid h-100">
+        <div class="row h-100">
+            <!-- Left Side with Info -->
+            <div class="col-md-6 login-info-side">
+            </div>
 
-                        <form method="post">
-                            <div class="mb-3">
-                                <label class="form-label">Username</label>
-                                <input type="text" name="username" class="form-control" placeholder="Enter username" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Password</label>
-                                <input type="password" name="password" class="form-control" placeholder="Enter password" required>
-                            </div>
-                            <div class="d-grid">
-                                <button type="submit" name="submit" class="btn btn-success">Login</button>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="card-footer text-center bg-white">
-                        <small>New Voter? <a href="register.php">Create an Account</a></small>
+            <!-- Right Side with Form -->
+            
+            <div class="col-md-6 login-form-side">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Coat_of_arms_of_Morocco.svg/2001px-Coat_of_arms_of_Morocco.svg.png" alt="Logo" class="login-logo mb-4">
+                <div class="login-form-container">
+                    <div class="card shadow-lg border-0">
+                        <div class="card-body p-5">
+                            <h3 class="text-center mb-4">Login</h3>
+                            
+                            <?php echo $error; ?>
+
+                            <form method="post">
+                                <div class="mb-4">
+                                    <label class="form-label">Username</label>
+                                    <input type="text" name="username" class="form-control form-control-lg" placeholder="Enter username" required>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label">Password</label>
+                                    <input type="password" name="password" class="form-control form-control-lg" placeholder="Enter password" required>
+                                </div>
+                                <div class="d-grid">
+                                    <button type="submit" name="submit" class="btn btn-danger btn-lg">Login</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="card-footer text-center bg-white py-3">
+                            <small>New Voter? <a href="register.php">Create an Account</a></small>
+                        </div>
                     </div>
                 </div>
             </div>

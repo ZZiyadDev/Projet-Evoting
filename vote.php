@@ -9,28 +9,36 @@ require('includes/db.php');
 
 $user_id = $_SESSION['user_id'];
 
-// Get user's voting status and district info
-$user_sql = "SELECT u.has_voted, u.district_id, d.name AS district_name 
-             FROM users u 
-             LEFT JOIN electoral_districts d ON u.district_id = d.id
-             WHERE u.id = '$user_id'";
-$user_result = mysqli_query($conn, $user_sql);
+// Get user's voting status and district info using a prepared statement
+$stmt = mysqli_prepare($conn, "SELECT u.has_voted, u.district_id, d.name AS district_name 
+                             FROM users u 
+                             LEFT JOIN electoral_districts d ON u.district_id = d.id
+                             WHERE u.id = ?");
+mysqli_stmt_bind_param($stmt, "i", $user_id);
+mysqli_stmt_execute($stmt);
+$user_result = mysqli_stmt_get_result($stmt);
 $user_data = mysqli_fetch_assoc($user_result);
-$has_voted = $user_data['has_voted'];
-$district_id = $user_data['district_id'];
-$district_name = $user_data['district_name'];
+mysqli_stmt_close($stmt);
+
+$has_voted = $user_data['has_voted'] ?? null;
+$district_id = $user_data['district_id'] ?? null;
+$district_name = $user_data['district_name'] ?? null;
 
 $parties = [];
 if (!$has_voted && !empty($district_id)) {
-    // Fetch parties that have at least one candidate in the user's district
+    // Fetch parties using a prepared statement
     $party_sql = "SELECT DISTINCT pp.id, pp.name, pp.logo_path, pp.description
                   FROM political_parties pp
                   JOIN candidates c ON pp.id = c.party_id
-                  WHERE c.district_id = '$district_id'";
-    $parties_result = mysqli_query($conn, $party_sql);
+                  WHERE c.district_id = ?";
+    $stmt = mysqli_prepare($conn, $party_sql);
+    mysqli_stmt_bind_param($stmt, "i", $district_id);
+    mysqli_stmt_execute($stmt);
+    $parties_result = mysqli_stmt_get_result($stmt);
     while($row = mysqli_fetch_assoc($parties_result)) {
         $parties[] = $row;
     }
+    mysqli_stmt_close($stmt);
 }
 ?>
 
@@ -40,24 +48,11 @@ if (!$has_voted && !empty($district_id)) {
     <title>Voting Page</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <style>
-        .party-card {
-            transition: transform .2s, box-shadow .2s;
-        }
-        .party-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        }
-        .party-logo {
-            width: 80px;
-            height: 80px;
-            object-fit: contain;
-        }
-    </style>
+    <link rel="stylesheet" href="assets/css/dashboard.css">
 </head>
 <body class="bg-light">
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
             <a class="navbar-brand" href="#">🗳️ E-Voting Portal</a>
             <div class="collapse navbar-collapse">
@@ -103,6 +98,10 @@ if (!$has_voted && !empty($district_id)) {
             <div class="text-center mb-4">
                 <h2>Your Electoral District: <span class="text-primary"><?php echo htmlspecialchars($district_name); ?></span></h2>
                 <p class="lead">Please cast your vote for one of the following political parties.</p>
+            </div>
+
+            <div class="alert alert-secondary text-center">
+                Unsure who to vote for? <a href="campaigns.php" class="alert-link">Click here to read about the candidates</a> running in your district.
             </div>
             
             <div class="row g-4 justify-content-center">

@@ -11,16 +11,20 @@ $message = "";
 
 // Handle form submission for adding a new district
 if (isset($_POST['add_district'])) {
-    $district_name = mysqli_real_escape_string($conn, $_POST['district_name']);
+    $district_name = $_POST['district_name'];
     $seats = (int)$_POST['seats'];
 
     if (!empty($district_name) && $seats > 0) {
-        $sql = "INSERT INTO electoral_districts (name, available_seats) VALUES ('$district_name', '$seats')";
-        if (mysqli_query($conn, $sql)) {
+        $sql = "INSERT INTO electoral_districts (name, available_seats) VALUES (?, ?)";
+        $stmt = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt, "si", $district_name, $seats);
+
+        if (mysqli_stmt_execute($stmt)) {
             $message = "<div class='alert alert-success'>Electoral district added successfully.</div>";
         } else {
-            $message = "<div class='alert alert-danger'>Error adding district: " . mysqli_error($conn) . "</div>";
+            $message = "<div class='alert alert-danger'>Error adding district: " . mysqli_stmt_error($stmt) . "</div>";
         }
+        mysqli_stmt_close($stmt);
     } else {
         $message = "<div class='alert alert-danger'>District name cannot be empty and seats must be a positive number.</div>";
     }
@@ -34,6 +38,7 @@ $districts_result = mysqli_query($conn, "SELECT * FROM electoral_districts ORDER
 <head>
     <title>Manage Electoral Districts</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/dashboard.css">
 </head>
 <body class="bg-light">
 

@@ -11,8 +11,8 @@ $message = "";
 
 // Handle form submission for adding a new party
 if (isset($_POST['add_party'])) {
-    $party_name = mysqli_real_escape_string($conn, $_POST['party_name']);
-    $description = mysqli_real_escape_string($conn, $_POST['description']);
+    $party_name = $_POST['party_name'];
+    $description = $_POST['description'];
     $logo_path = NULL;
 
     // Handle logo upload
@@ -40,12 +40,16 @@ if (isset($_POST['add_party'])) {
 
     // Basic validation
     if (!empty($party_name)) {
-        $sql = "INSERT INTO political_parties (name, description, logo_path) VALUES ('$party_name', '$description', " . ($logo_path ? "'$logo_path'" : "NULL") . ")";
-        if (mysqli_query($conn, $sql)) {
+        $sql = "INSERT INTO political_parties (name, description, logo_path) VALUES (?, ?, ?)";
+        $stmt = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt, "sss", $party_name, $description, $logo_path);
+        
+        if (mysqli_stmt_execute($stmt)) {
             $message = "<div class='alert alert-success'>Political party added successfully.</div>";
         } else {
-            $message = "<div class='alert alert-danger'>Error adding party: " . mysqli_error($conn) . "</div>";
+            $message = "<div class='alert alert-danger'>Error adding party: " . mysqli_stmt_error($stmt) . "</div>";
         }
+        mysqli_stmt_close($stmt);
     } else {
         $message = "<div class='alert alert-danger'>Party name cannot be empty.</div>";
     }
@@ -59,6 +63,7 @@ $parties_result = mysqli_query($conn, "SELECT * FROM political_parties ORDER BY 
 <head>
     <title>Manage Political Parties</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/dashboard.css">
 </head>
 <body class="bg-light">
 

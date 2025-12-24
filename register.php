@@ -10,28 +10,43 @@ $districts_result = mysqli_query($conn, "SELECT * FROM electoral_districts ORDER
 
 
 if (isset($_POST['register'])) {
-    $fullname = mysqli_real_escape_string($conn, $_POST['fullname']);
-    $username = mysqli_real_escape_string($conn, $_POST['username']);
-    $password = mysqli_real_escape_string($conn, $_POST['password']);
+    $fullname = $_POST['fullname'];
+    $username = $_POST['username'];
+    $password = $_POST['password'];
     $district_id = (int)$_POST['district_id'];
-    $hashed_password = password_hash($password, PASSWORD_DEFAULT); 
-
+    
     // Basic validation
     if (empty($district_id)) {
         $message = "<div class='alert alert-danger'>Please select your electoral district.</div>";
-    } else {
-        // Check if username already exists
-        $check = mysqli_query($conn, "SELECT * FROM users WHERE username='$username'");
-        if (mysqli_num_rows($check) > 0) {
+    } elseif (empty($fullname) || empty($username) || empty($password)) {
+        $message = "<div class='alert alert-danger'>Please fill in all fields.</div>";
+    }
+    else {
+        // Check if username already exists using a prepared statement
+        $stmt = mysqli_prepare($conn, "SELECT id FROM users WHERE username = ?");
+        mysqli_stmt_bind_param($stmt, "s", $username);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_store_result($stmt);
+
+        if (mysqli_stmt_num_rows($stmt) > 0) {
             $message = "<div class='alert alert-danger'>Username already taken. Please choose another.</div>";
+            mysqli_stmt_close($stmt);
         } else {
-            // Insert new VOTER
-            $sql = "INSERT INTO users (username, password, full_name, role, district_id) VALUES ('$username', '$hashed_password', '$fullname', 'voter', '$district_id')";
-            if (mysqli_query($conn, $sql)) {
+            mysqli_stmt_close($stmt);
+            // Insert new VOTER using a prepared statement
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+            $role = 'voter';
+            
+            $sql = "INSERT INTO users (username, password, full_name, role, district_id) VALUES (?, ?, ?, ?, ?)";
+            $stmt = mysqli_prepare($conn, $sql);
+            mysqli_stmt_bind_param($stmt, "ssssi", $username, $hashed_password, $fullname, $role, $district_id);
+            
+            if (mysqli_stmt_execute($stmt)) {
                 $message = "<div class='alert alert-success'>Account created! <a href='index.php'>Login here</a></div>";
             } else {
-                $message = "<div class='alert alert-danger'>Error: " . mysqli_error($conn) . "</div>";
+                $message = "<div class='alert alert-danger'>Error: " . mysqli_stmt_error($stmt) . "</div>";
             }
+            mysqli_stmt_close($stmt);
         }
     }
 }
@@ -42,6 +57,7 @@ if (isset($_POST['register'])) {
 <head>
     <title>Voter Registration</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/dashboard.css">
 </head>
 <body class="bg-light">
 

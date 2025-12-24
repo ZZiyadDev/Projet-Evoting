@@ -11,80 +11,129 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'candidate') {
 
 $user_id = $_SESSION['user_id'];
 $message = "";
+$message_type = "success";
 
 // 2. Handle Form Submission
 if (isset($_POST['update_profile'])) {
-    $description = mysqli_real_escape_string($conn, $_POST['description']);
+    $description = $_POST['description'];
+    $photo_path_to_update = null;
+    $upload_error = false;
     
     // A. Handle Image Upload
-    $photo_sql_part = ""; // We only update photo if a new one is selected
-    
     if (!empty($_FILES['photo']['name'])) {
         $target_dir = "uploads/";
         // Create unique name to prevent overwriting: "candidate_ID_filename"
         $target_file = $target_dir . "candidate_" . $user_id . "_" . basename($_FILES["photo"]["name"]);
-        
-        // Move the file from temporary storage to our folder
-        if (move_uploaded_file($_FILES["photo"]["tmp_name"], $target_file)) {
-            $photo_sql_part = ", photo_path='$target_file'";
+        $file_type = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+        $allowed_types = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+        if (in_array($file_type, $allowed_types)) {
+            if (move_uploaded_file($_FILES["photo"]["tmp_name"], $target_file)) {
+                $photo_path_to_update = $target_file;
+            } else {
+                $upload_error = true;
+            }
         } else {
-            $message = "Error uploading photo.";
+            $upload_error = true;
+            $message = "Invalid file type. Only JPG, JPEG, PNG, GIF, WEBP allowed.";
+            $message_type = "danger";
         }
     }
 
-    // B. Update Database
-    $sql = "UPDATE candidates SET description='$description' $photo_sql_part WHERE user_id='$user_id'";
-    
-    if (mysqli_query($conn, $sql)) {
-        $message = "Profile updated successfully!";
-    } else {
-        $message = "Error updating database: " . mysqli_error($conn);
+    // B. Update Database with Prepared Statement
+    if (!$upload_error) {
+        if ($photo_path_to_update !== null) {
+            $sql = "UPDATE candidates SET description = ?, photo_path = ? WHERE user_id = ?";
+            $stmt = mysqli_prepare($conn, $sql);
+            mysqli_stmt_bind_param($stmt, "ssi", $description, $photo_path_to_update, $user_id);
+        } else {
+            $sql = "UPDATE candidates SET description = ? WHERE user_id = ?";
+            $stmt = mysqli_prepare($conn, $sql);
+            mysqli_stmt_bind_param($stmt, "si", $description, $user_id);
+        }
+        
+        if (mysqli_stmt_execute($stmt)) {
+            $message = "Profile updated successfully!";
+            $message_type = "success";
+            if ($upload_error) {
+                 $message = "Profile description updated, but there was an error uploading the photo.";
+                 $message_type = "warning";
+            }
+        } else {
+            $message = "Error updating database: " . mysqli_stmt_error($stmt);
+            $message_type = "danger";
+        }
+        mysqli_stmt_close($stmt);
     }
 }
 
 // 3. Fetch current data to show in the form
-$query = "SELECT * FROM candidates WHERE user_id='$user_id'";
-$result = mysqli_query($conn, $query);
+$stmt = mysqli_prepare($conn, "SELECT * FROM candidates WHERE user_id = ?");
+mysqli_stmt_bind_param($stmt, "i", $user_id);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
 $current_data = mysqli_fetch_assoc($result);
+mysqli_stmt_close($stmt);
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
     <title>Edit Profile</title>
-    <style>
-        body { font-family: sans-serif; padding: 20px; }
-        .form-box { max-width: 500px; padding: 20px; border: 1px solid #ccc; }
-        textarea { width: 100%; height: 150px; }
-        .success { color: green; font-weight: bold; }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/dashboard.css">
 </head>
-<body>
-    <h1>Edit Your Campaign Profile ✍️</h1>
-    <a href="cand_dashboard.php">← Back to Dashboard</a>
-    <hr>
+<body class="bg-light">
 
-    <?php if($message) echo "<p class='success'>$message</p>"; ?>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="cand_dashboard.php">🗳️ Candidate Dashboard</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="logout.php">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-    <div class="form-box">
-        <form method="post" enctype="multipart/form-data">
-            
-            <label><strong>Campaign Manifesto (Description):</strong></label><br>
-            <textarea name="description" placeholder="Write your goals here..."><?php echo $current_data['description']; ?></textarea>
-            <br><br>
+    <div class="container mt-4">
+        <a href="cand_dashboard.php">← Back to Dashboard</a>
+        <hr>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Edit Your Campaign Profile ✍️</h4>
+                    </div>
+                    <div class="card-body">
+                        <?php if($message): ?>
+                            <div class="alert alert-<?php echo $message_type; ?>"><?php echo $message; ?></div>
+                        <?php endif; ?>
 
-            <label><strong>Upload Photo:</strong></label><br>
-            <?php 
-                if(!empty($current_data['photo_path'])) {
-                    echo "<img src='" . $current_data['photo_path'] . "' width='100'><br>";
-                    echo "<small>Current photo above. Upload new one to change.</small><br>";
-                }
-            ?>
-            <input type="file" name="photo" accept="image/*">
-            <br><br>
+                        <form method="post" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="description" class="form-label"><strong>Campaign Manifesto (Description):</strong></label>
+                                <textarea id="description" name="description" class="form-control" rows="8" placeholder="Write your goals, platform, and promises to the voters here..."><?php echo htmlspecialchars($current_data['description'] ?? ''); ?></textarea>
+                            </div>
 
-            <button type="submit" name="update_profile">Save Changes</button>
-        </form>
+                            <div class="mb-3">
+                                <label for="photo" class="form-label"><strong>Upload Photo:</strong></label><br>
+                                <?php 
+                                    if(!empty($current_data['photo_path'])) {
+                                        echo "<img src='" . htmlspecialchars($current_data['photo_path']) . "' class='img-fluid rounded mb-2' style='max-width: 200px;'><br>";
+                                        echo "<small class='text-muted'>Current photo is shown above. Upload a new file to replace it.</small><br>";
+                                    }
+                                ?>
+                                <input type="file" id="photo" name="photo" class="form-control mt-2" accept="image/*">
+                            </div>
+
+                            <button type="submit" name="update_profile" class="btn btn-primary">Save Changes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
 </body>
 </html>
