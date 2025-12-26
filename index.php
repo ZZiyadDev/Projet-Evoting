@@ -47,6 +47,10 @@ if (isset($_POST['submit'])) {
         <div class="row h-100">
             <!-- Left Side with Info -->
             <div class="col-md-6 login-info-side">
+                <div class="login-info-content">
+                    <h1 class="text-white">E-Voting System</h1>
+                    <p class="text-white-50">Modern, Secure, and Transparent Elections.</p>
+                </div>
             </div>
 
             <!-- Right Side with Form -->
@@ -70,7 +74,7 @@ if (isset($_POST['submit'])) {
                                     <input type="password" name="password" class="form-control form-control-lg" placeholder="Enter password" required>
                                 </div>
                                 <div class="d-grid">
-                                    <button type="submit" name="submit" class="btn btn-danger btn-lg">Login</button>
+                                    <button type="submit" name="submit" class="btn btn-primary btn-lg">Login</button>
                                 </div>
                             </form>
                         </div>

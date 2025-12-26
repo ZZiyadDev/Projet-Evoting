@@ -38,7 +38,7 @@ $districts_result = mysqli_query($conn, "SELECT * FROM electoral_districts ORDER
 <head>
     <title>Manage Electoral Districts</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body class="bg-light">
 

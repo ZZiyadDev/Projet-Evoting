@@ -12,7 +12,7 @@ if ($_SESSION['role'] !== 'admin') {
 <head>
     <title>Admin Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 </head>
 <body class="bg-light">
@@ -50,30 +50,30 @@ if ($_SESSION['role'] !== 'admin') {
             <div class="col-md-4">
                 <div class="card text-center h-100">
                     <div class="card-body">
-                        <i class="bi bi-geo-alt-fill fs-1 text-warning"></i>
+                        <i class="bi bi-geo-alt-fill fs-1 text-primary"></i>
                         <h5 class="card-title mt-2">Manage Districts</h5>
                         <p class="card-text">Define the electoral districts for the election.</p>
-                        <a href="admin_districts.php" class="btn btn-warning">Go to Districts</a>
+                        <a href="admin_districts.php" class="btn btn-primary">Go to Districts</a>
                     </div>
                 </div>
             </div>
              <div class="col-md-4">
                 <div class="card text-center h-100">
                     <div class="card-body">
-                        <i class="bi bi-person-plus-fill fs-1 text-success"></i>
+                        <i class="bi bi-person-plus-fill fs-1 text-primary"></i>
                         <h5 class="card-title mt-2">Create Candidate</h5>
                         <p class="card-text">Create user accounts for new candidates running in the election.</p>
-                        <a href="create_candidate.php" class="btn btn-success">Create Now</a>
+                        <a href="create_candidate.php" class="btn btn-primary">Create Now</a>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="card text-center h-100">
                     <div class="card-body">
-                        <i class="bi bi-list-ol fs-1 text-secondary"></i>
+                        <i class="bi bi-list-ol fs-1 text-primary"></i>
                         <h5 class="card-title mt-2">Manage Candidates</h5>
                         <p class="card-text">Set the rank of candidates within their party lists for each district.</p>
-                        <a href="admin_candidates.php" class="btn btn-secondary">Manage Ranks</a>
+                        <a href="admin_candidates.php" class="btn btn-primary">Manage Ranks</a>
                     </div>
                 </div>
             </div>
@@ -83,7 +83,7 @@ if ($_SESSION['role'] !== 'admin') {
                         <i class="bi bi-bar-chart-line-fill fs-1 text-info"></i>
                         <h5 class="card-title mt-2">View Results</h5>
                         <p class="card-text">See the current vote counts and election results.</p>
-                        <a href="results.php" class="btn btn-info">View Results</a>
+                        <a href="results.php" class="btn btn-primary">View Results</a>
                     </div>
                 </div>
             </div>

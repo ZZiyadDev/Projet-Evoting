@@ -7,10 +7,18 @@ html, body.login-page {
 
 /* Left side with background and info */
 .login-info-side {
-    background-image: url("../images/pattern.jpg");
-    background-size: cover;
+    background-color: var(--primary-red); /* Fallback color */
+    background-image: linear-gradient(135deg, var(--primary-red-hover) 0%, var(--primary-red) 100%),
+                      url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 0L40 20L20 40L0 20Z' fill-opacity='0.1' fill='%23FFFFFF'/%3E%3C/svg%3E");
+    background-size: auto; /* Use auto for repeating patterns */
     background-position: center;
     min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    padding: 2rem;
+    text-align: center;
 }
 
 .login-info-content h1 {
@@ -61,3 +69,260 @@ html, body.login-page {
     max-width: 150px;
     height: auto;
 }
+
+/* Uniforme - A modern, minimalist, red-themed stylesheet */
+
+/* 1. Imports */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+/* 2. Root Variables */
+:root {
+    --primary-red: #c0392b;
+    --primary-red-hover: #a53125;
+    --secondary-green: #27ae60;
+    --secondary-green-hover: #229954;
+    --light-gray: #f8f9fa;
+    --medium-gray: #e9ecef;
+    --dark-gray: #6c757d;
+    --dark-text: #343a40;
+    --white: #ffffff;
+    --border-color: #dee2e6;
+    --shadow: 0 4px 15px rgba(0,0,0,0.07);
+}
+
+/* 3. General Body & Typography */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--light-gray);
+    color: var(--dark-text);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    color: var(--dark-text);
+    margin-top: 0;
+}
+
+p {
+    margin-bottom: 1rem;
+}
+
+a {
+    color: var(--primary-red);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--primary-red-hover);
+    text-decoration: underline;
+}
+
+/* 4. Layout & Container */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 0;
+}
+
+/* 5. Navbar */
+.navbar {
+    background-color: var(--primary-red);
+    padding: 1rem 0;
+    box-shadow: var(--shadow);
+}
+.navbar-brand, .nav-link {
+    color: var(--white) !important;
+    font-weight: 500;
+}
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+.nav-link:hover {
+    color: var(--medium-gray) !important;
+}
+
+/* 6. Cards */
+.card {
+    background-color: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow);
+    transition: transform .2s, box-shadow .2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.card-title {
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--dark-text);
+}
+
+.card-header {
+    background-color: transparent;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+}
+
+/* Specific card styles */
+.party-logo {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    margin: 20px auto;
+}
+
+
+/* 7. Buttons */
+.btn {
+    display: inline-block;
+    font-weight: 600;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    background-color: transparent;
+    border: 1px solid transparent;
+    padding: 0.75rem 1.25rem;
+    font-size: 1rem;
+    border-radius: 5px;
+    transition: all .2s ease-in-out;
+}
+
+.btn-primary {
+    background-color: var(--primary-red);
+    border-color: var(--primary-red);
+    color: var(--white);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-red-hover);
+    border-color: var(--primary-red-hover);
+    color: var(--white);
+}
+
+.btn-success {
+    background-color: var(--secondary-green);
+    border-color: var(--secondary-green);
+    color: var(--white);
+}
+
+.btn-success:hover {
+    background-color: var(--secondary-green-hover);
+    border-color: var(--secondary-green-hover);
+    color: var(--white);
+}
+
+.btn-secondary {
+    background-color: var(--dark-gray);
+    border-color: var(--dark-gray);
+    color: var(--white);
+}
+.btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+    color: var(--white);
+}
+
+/* 8. Forms */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.form-control {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--dark-text);
+    background-color: var(--white);
+    background-clip: padding-box;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+.form-control:focus {
+    color: var(--dark-text);
+    background-color: var(--white);
+    border-color: var(--primary-red);
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(192, 57, 43, 0.25);
+}
+
+/* 9. Login Page Specifics */
+body.login-page {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url("../images/pattern.jpg");
+    background-size: cover;
+    background-position: center;
+}
+.login-container {
+    width: 100%;
+    max-width: 450px;
+}
+.login-container .card {
+    padding: 2.5rem;
+}
+.login-logo {
+    max-width: 150px;
+    height: auto;
+    display: block;
+    margin: 0 auto 1.5rem;
+}
+
+/* 10. Table Styles */
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+    background-color: var(--white);
+    border-collapse: collapse;
+}
+.table th,
+.table td {
+    padding: 0.75rem;
+    vertical-align: top;
+    border-top: 1px solid var(--border-color);
+}
+.table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid var(--border-color);
+    background-color: var(--light-gray);
+    font-weight: 600;
+}
+
+/* 11. Utility Classes */
+.text-center {
+    text-align: center;
+}
+.mt-1 { margin-top: 0.25rem !important; }
+.mt-2 { margin-top: 0.5rem !important; }
+.mt-3 { margin-top: 1rem !important; }
+.mt-4 { margin-top: 1.5rem !important; }
+.mt-5 { margin-top: 3rem !important; }
+
+.mb-1 { margin-bottom: 0.25rem !important; }
+.mb-2 { margin-bottom: 0.5rem !important; }
+.mb-3 { margin-bottom: 1rem !important; }
+.mb-4 { margin-bottom: 1.5rem !important; }
+.mb-5 { margin-bottom: 3rem !important; }
