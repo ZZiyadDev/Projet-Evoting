@@ -20,6 +20,7 @@ if (isset($_POST['submit'])) {
             $_SESSION['user_id'] = $row['id'];
             $_SESSION['role'] = $row['role'];
             $_SESSION['name'] = $row['full_name'];
+            $_SESSION['district_id'] = (int)$row['district_id'];
 
             if ($row['role'] == 'admin') header("Location: admin_dashboard.php");
             elseif ($row['role'] == 'candidate') header("Location: cand_dashboard.php");

@@ -19,10 +19,10 @@ if ($_SESSION['role'] !== 'admin') {
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
         <div class="container">
-            <a class="navbar-brand" href="admin_dashboard.php">🗳️ E-Voting Admin</a>
+            <a class="navbar-brand" href="admin_dashboard.php">🗳️ Vote Électronique - Admin</a>
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="logout.php">Logout</a></li>
+                    <li class="nav-item"><a class="nav-link" href="logout.php">Déconnexion</a></li>
                 </ul>
             </div>
         </div>
@@ -30,20 +30,20 @@ if ($_SESSION['role'] !== 'admin') {
 
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center">
-            <h2>Admin Dashboard</h2>
-            <p class="lead">Welcome, <?php echo htmlspecialchars($_SESSION['name']); ?>!</p>
+            <h2>Tableau de Bord Admin</h2>
+            <p class="lead">Bienvenue, <?php echo htmlspecialchars($_SESSION['name']); ?>!</p>
         </div>
         <hr>
 
-        <h4>Election Management</h4>
+        <h4>Gestion de l'Élection</h4>
         <div class="row g-3 mt-2">
             <div class="col-md-4">
                 <div class="card text-center h-100">
                     <div class="card-body">
                         <i class="bi bi-people-fill fs-1 text-primary"></i>
-                        <h5 class="card-title mt-2">Manage Parties</h5>
-                        <p class="card-text">Add, edit, or remove political parties from the system.</p>
-                        <a href="admin_parties.php" class="btn btn-primary">Go to Parties</a>
+                        <h5 class="card-title mt-2">Gérer les Partis</h5>
+                        <p class="card-text">Ajoutez, modifiez ou supprimez les partis politiques du système.</p>
+                        <a href="admin_parties.php" class="btn btn-primary">Aller aux Partis</a>
                     </div>
                 </div>
             </div>
@@ -51,9 +51,9 @@ if ($_SESSION['role'] !== 'admin') {
                 <div class="card text-center h-100">
                     <div class="card-body">
                         <i class="bi bi-geo-alt-fill fs-1 text-primary"></i>
-                        <h5 class="card-title mt-2">Manage Districts</h5>
-                        <p class="card-text">Define the electoral districts for the election.</p>
-                        <a href="admin_districts.php" class="btn btn-primary">Go to Districts</a>
+                        <h5 class="card-title mt-2">Gérer les Circonscriptions</h5>
+                        <p class="card-text">Définissez les circonscriptions électorales pour l'élection.</p>
+                        <a href="admin_districts.php" class="btn btn-primary">Aller aux Circonscriptions</a>
                     </div>
                 </div>
             </div>
@@ -61,9 +61,9 @@ if ($_SESSION['role'] !== 'admin') {
                 <div class="card text-center h-100">
                     <div class="card-body">
                         <i class="bi bi-person-plus-fill fs-1 text-primary"></i>
-                        <h5 class="card-title mt-2">Create Candidate</h5>
-                        <p class="card-text">Create user accounts for new candidates running in the election.</p>
-                        <a href="create_candidate.php" class="btn btn-primary">Create Now</a>
+                        <h5 class="card-title mt-2">Créer un Candidat</h5>
+                        <p class="card-text">Créez des comptes pour les nouveaux candidats se présentant à l'élection.</p>
+                        <a href="create_candidate.php" class="btn btn-primary">Créer Maintenant</a>
                     </div>
                 </div>
             </div>
@@ -71,9 +71,9 @@ if ($_SESSION['role'] !== 'admin') {
                 <div class="card text-center h-100">
                     <div class="card-body">
                         <i class="bi bi-list-ol fs-1 text-primary"></i>
-                        <h5 class="card-title mt-2">Manage Candidates</h5>
-                        <p class="card-text">Set the rank of candidates within their party lists for each district.</p>
-                        <a href="admin_candidates.php" class="btn btn-primary">Manage Ranks</a>
+                        <h5 class="card-title mt-2">Gérer les Candidats</h5>
+                        <p class="card-text">Définissez le rang des candidats sur les listes de leur parti pour chaque circonscription.</p>
+                        <a href="admin_candidates.php" class="btn btn-primary">Gérer les Rangs</a>
                     </div>
                 </div>
             </div>
@@ -81,9 +81,9 @@ if ($_SESSION['role'] !== 'admin') {
                 <div class="card text-center h-100">
                     <div class="card-body">
                         <i class="bi bi-bar-chart-line-fill fs-1 text-info"></i>
-                        <h5 class="card-title mt-2">View Results</h5>
-                        <p class="card-text">See the current vote counts and election results.</p>
-                        <a href="results.php" class="btn btn-primary">View Results</a>
+                        <h5 class="card-title mt-2">Voir les Résultats</h5>
+                        <p class="card-text">Consultez le décompte des votes et les résultats des élections.</p>
+                        <a href="results.php" class="btn btn-primary">Voir les Résultats</a>
                     </div>
                 </div>
             </div>

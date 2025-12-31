@@ -1,328 +1,185 @@
-html, body.login-page {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    font-family: 'Poppins', sans-serif; /* A modern font, will fallback to sans-serif */
-}
+/* =========================
+   Maroc Red + Zellige Theme
+   ========================= */
 
-/* Left side with background and info */
-.login-info-side {
-    background-color: var(--primary-red); /* Fallback color */
-    background-image: linear-gradient(135deg, var(--primary-red-hover) 0%, var(--primary-red) 100%),
-                      url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 0L40 20L20 40L0 20Z' fill-opacity='0.1' fill='%23FFFFFF'/%3E%3C/svg%3E");
-    background-size: auto; /* Use auto for repeating patterns */
-    background-position: center;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    padding: 2rem;
-    text-align: center;
-}
-
-.login-info-content h1 {
-    font-weight: bold;
-    font-size: 3rem;
-}
-
-/* Right side with the form */
-.login-form-side {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background-color: #f8f9fa;
-}
-
-.login-form-container {
-    width: 100%;
-    max-width: 450px;
-}
-
-.login-form-side .card {
-    border-radius: 1rem;
-}
-
-.form-control-lg {
-    padding: 1rem 1.25rem;
-    font-size: 1rem;
-}
-
-.btn-lg {
-    padding: 0.75rem 1.25rem;
-    font-size: 1.1rem;
-    font-weight: bold;
-}
-
-.card-footer a {
-    text-decoration: none;
-    font-weight: bold;
-    color: #dc3545; /* Red to match the button */
-}
-
-.card-footer a:hover {
-    text-decoration: underline;
-}
-
-.login-logo {
-    max-width: 150px;
-    height: auto;
-}
-
-/* Uniforme - A modern, minimalist, red-themed stylesheet */
-
-/* 1. Imports */
+/* 1) Import FIRST */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
-/* 2. Root Variables */
+/* 2) Variables FIRST */
 :root {
-    --primary-red: #c0392b;
-    --primary-red-hover: #a53125;
-    --secondary-green: #27ae60;
-    --secondary-green-hover: #229954;
-    --light-gray: #f8f9fa;
-    --medium-gray: #e9ecef;
-    --dark-gray: #6c757d;
-    --dark-text: #343a40;
-    --white: #ffffff;
-    --border-color: #dee2e6;
-    --shadow: 0 4px 15px rgba(0,0,0,0.07);
+  --primary-red: #c1272d;
+  --primary-red-hover: #9f1f23;
+
+  --secondary-green: #27ae60;
+  --secondary-green-hover: #229954;
+
+  --light-gray: #eef2f6;
+ --medium-gray: #dde3ea;
+  --dark-gray: #6c757d;
+
+  --dark-text: #343a40;
+  --white: #ffffff;
+  --border-color: #dee2e6;
+  --shadow: 0 10px 30px rgba(0,0,0,0.10);
+
+  /* Bootstrap overrides */
+  --bs-primary: var(--primary-red);
+  --bs-primary-rgb: 193, 39, 45;
+  --bs-link-color: var(--primary-red);
+  --bs-link-hover-color: var(--primary-red-hover);
 }
 
-/* 3. General Body & Typography */
-body {
-    font-family: 'Poppins', sans-serif;
-    background-color: var(--light-gray);
-    color: var(--dark-text);
-    margin: 0;
-    padding: 0;
-    line-height: 1.6;
+/* 3) Base */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  background: var(--light-gray);
+  color: var(--dark-text);
 }
 
-h1, h2, h3, h4, h5, h6 {
-    font-weight: 600;
-    color: var(--dark-text);
-    margin-top: 0;
-}
+a { color: var(--primary-red); text-decoration: none; }
+a:hover { color: var(--primary-red-hover); text-decoration: underline; }
 
-p {
-    margin-bottom: 1rem;
-}
+/* Force Bootstrap primary */
+.bg-primary { background-color: var(--primary-red) !important; }
+.btn-primary { background-color: var(--primary-red) !important; border-color: var(--primary-red) !important; }
+.btn-primary:hover { background-color: var(--primary-red-hover) !important; border-color: var(--primary-red-hover) !important; }
+.navbar.bg-primary { background-color: var(--primary-red) !important; }
 
-a {
-    color: var(--primary-red);
-    text-decoration: none;
-}
-
-a:hover {
-    color: var(--primary-red-hover);
-    text-decoration: underline;
-}
-
-/* 4. Layout & Container */
-.container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem 0;
-}
-
-/* 5. Navbar */
+/* Navbar */
 .navbar {
-    background-color: var(--primary-red);
-    padding: 1rem 0;
-    box-shadow: var(--shadow);
+  background-color: var(--primary-red);
+  box-shadow: var(--shadow);
 }
-.navbar-brand, .nav-link {
-    color: var(--white) !important;
-    font-weight: 500;
-}
-.navbar-brand {
-    font-size: 1.5rem;
-    font-weight: 700;
-}
-.nav-link:hover {
-    color: var(--medium-gray) !important;
-}
+.navbar-brand, .nav-link { color: var(--white) !important; }
+.nav-link:hover { color: var(--medium-gray) !important; }
 
-/* 6. Cards */
+/* Cards */
 .card {
-    background-color: var(--white);
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    box-shadow: var(--shadow);
-    transition: transform .2s, box-shadow .2s;
+  background: var(--white);
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
 }
 
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+/* Forms */
+.form-label { font-weight: 600; }
+.form-control, .form-select {
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+.form-control:focus, .form-select:focus {
+  border-color: var(--primary-red);
+  box-shadow: 0 0 0 0.20rem rgba(193,39,45,0.18);
 }
 
-.card-title {
-    font-weight: 600;
-    margin-bottom: 1rem;
-    color: var(--dark-text);
+/* Buttons */
+.btn-lg { border-radius: 12px; font-weight: 700; }
+
+/* =========================
+   LOGIN PAGE
+   ========================= */
+body.login-page{
+  min-height: 100vh;
+  background: var(--light-gray);
 }
 
-.card-header {
-    background-color: transparent;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 1rem;
-    margin-bottom: 1rem;
+/* Left side */
+.login-info-side{
+  min-height: 100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding: 2.5rem 2rem;
+  color: white;
+
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='0.12' stroke-width='2'%3E%3Cpath d='M32 2 L62 32 L32 62 L2 32 Z'/%3E%3Cpath d='M32 14 L50 32 L32 50 L14 32 Z'/%3E%3C/g%3E%3C/svg%3E"),
+    linear-gradient(135deg, var(--primary-red-hover) 0%, var(--primary-red) 100%);
+  background-size: 72px 72px, cover;
+  background-position: center, center;
 }
 
-/* Specific card styles */
-.party-logo {
-    width: 100px;
-    height: 100px;
-    object-fit: contain;
-    margin: 20px auto;
+.login-info-content h1{
+  font-weight: 800;
+  font-size: clamp(2rem, 4vw, 3rem);
 }
 
-
-/* 7. Buttons */
-.btn {
-    display: inline-block;
-    font-weight: 600;
-    text-align: center;
-    vertical-align: middle;
-    cursor: pointer;
-    user-select: none;
-    background-color: transparent;
-    border: 1px solid transparent;
-    padding: 0.75rem 1.25rem;
-    font-size: 1rem;
-    border-radius: 5px;
-    transition: all .2s ease-in-out;
+/* Right side */
+.login-form-side{
+  min-height: 100vh;
+  display:flex;
+  flex-direction: column;
+  justify-content:center;
+  align-items:center;
+  padding: 2.5rem 1.5rem;
+  background: radial-gradient(1200px 500px at 20% 0%, #fbf7f0 0%, var(--light-gray) 60%, var(--light-gray) 100%);
 }
 
-.btn-primary {
-    background-color: var(--primary-red);
-    border-color: var(--primary-red);
-    color: var(--white);
+.login-form-container{
+  width: 100%;
+  max-width: 450px;
 }
 
-.btn-primary:hover {
-    background-color: var(--primary-red-hover);
-    border-color: var(--primary-red-hover);
-    color: var(--white);
+.login-logo{
+  width: 90px;
+  height: auto;
+  display: block;
+  margin: 0 auto 1.5rem;
 }
 
-.btn-success {
-    background-color: var(--secondary-green);
-    border-color: var(--secondary-green);
-    color: var(--white);
+/* Footer link */
+.card-footer a{
+  color: var(--primary-red);
+  font-weight: 700;
+}
+.card-footer a:hover{
+  color: var(--primary-red-hover);
+  text-decoration: underline;
 }
 
-.btn-success:hover {
-    background-color: var(--secondary-green-hover);
-    border-color: var(--secondary-green-hover);
-    color: var(--white);
+/* =========================
+   AUTH PAGES (Register etc.)
+   ========================= */
+.auth-page{
+  min-height: 100vh;
+  background: radial-gradient(1200px 500px at 20% 0%, #fbf7f0 0%, var(--light-gray) 60%, var(--light-gray) 100%);
+  display: flex;
+  align-items: center;
+}
+.auth-page .container{ padding: 2rem 0; }
+.auth-card{ border-radius: 18px; overflow: hidden; }
+.auth-card .card-header{
+  background: linear-gradient(135deg, var(--primary-red-hover) 0%, var(--primary-red) 100%) !important;
+  border-bottom: 0;
 }
 
-.btn-secondary {
-    background-color: var(--dark-gray);
-    border-color: var(--dark-gray);
-    color: var(--white);
+.alert-info{
+  background: rgba(193,39,45,0.08);
+  border-color: rgba(193,39,45,0.18);
+  color: var(--dark-text);
 }
-.btn-secondary:hover {
-    background-color: #5a6268;
-    border-color: #545b62;
-    color: var(--white);
+.alert-info strong{ color: var(--primary-red); }
+
+/* Table */
+.table-dark{
+  --bs-table-bg: #1f2328;      /* readable */
+  --bs-table-color: #fff;
+}
+.table-hover tbody tr:hover{
+  background-color: rgba(193,39,45,0.06);
 }
 
-/* 8. Forms */
-.form-group {
-    margin-bottom: 1.5rem;
+/* Progress */
+.progress{
+  background-color: rgba(0,0,0,0.06);
+  border-radius: 999px;
+  overflow: hidden;
 }
-
-.form-label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 600;
+.progress-bar{
+  background-color: var(--primary-red) !important;
+  font-weight: 700;
 }
-
-.form-control {
-    display: block;
-    width: 100%;
-    padding: 0.75rem 1rem;
-    font-size: 1rem;
-    line-height: 1.5;
-    color: var(--dark-text);
-    background-color: var(--white);
-    background-clip: padding-box;
-    border: 1px solid var(--border-color);
-    border-radius: 5px;
-    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-}
-.form-control:focus {
-    color: var(--dark-text);
-    background-color: var(--white);
-    border-color: var(--primary-red);
-    outline: 0;
-    box-shadow: 0 0 0 0.2rem rgba(192, 57, 43, 0.25);
-}
-
-/* 9. Login Page Specifics */
-body.login-page {
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-image: url("../images/pattern.jpg");
-    background-size: cover;
-    background-position: center;
-}
-.login-container {
-    width: 100%;
-    max-width: 450px;
-}
-.login-container .card {
-    padding: 2.5rem;
-}
-.login-logo {
-    max-width: 150px;
-    height: auto;
-    display: block;
-    margin: 0 auto 1.5rem;
-}
-
-/* 10. Table Styles */
-.table {
-    width: 100%;
-    margin-bottom: 1rem;
-    background-color: var(--white);
-    border-collapse: collapse;
-}
-.table th,
-.table td {
-    padding: 0.75rem;
-    vertical-align: top;
-    border-top: 1px solid var(--border-color);
-}
-.table thead th {
-    vertical-align: bottom;
-    border-bottom: 2px solid var(--border-color);
-    background-color: var(--light-gray);
-    font-weight: 600;
-}
-
-/* 11. Utility Classes */
-.text-center {
-    text-align: center;
-}
-.mt-1 { margin-top: 0.25rem !important; }
-.mt-2 { margin-top: 0.5rem !important; }
-.mt-3 { margin-top: 1rem !important; }
-.mt-4 { margin-top: 1.5rem !important; }
-.mt-5 { margin-top: 3rem !important; }
-
-.mb-1 { margin-bottom: 0.25rem !important; }
-.mb-2 { margin-bottom: 0.5rem !important; }
-.mb-3 { margin-bottom: 1rem !important; }
-.mb-4 { margin-bottom: 1.5rem !important; }
-.mb-5 { margin-bottom: 3rem !important; }
