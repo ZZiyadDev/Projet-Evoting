@@ -157,6 +157,23 @@ body.login-page{
   border-bottom: 0;
 }
 
+.party-logo{
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  padding: 8px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 14px;
+  display: block;
+  margin: 0 auto;
+}
+
+.party-card .card-text{
+  min-height: 3.5em; /* optionnel: aligne les cartes */
+}
+
+
 .alert-info{
   background: rgba(193,39,45,0.08);
   border-color: rgba(193,39,45,0.18);
@@ -183,3 +200,25 @@ body.login-page{
   background-color: var(--primary-red) !important;
   font-weight: 700;
 }
+
+/* input-group look */
+.input-group-text{
+  border-radius: 12px 0 0 12px;
+  border: 1px solid var(--border-color);
+}
+.input-group .form-control{
+  border-left: 0;
+}
+
+.candidate-photo{
+  width: 150px;
+  height: 150px;
+  max-width: 150px;
+  max-height: 150px;
+  object-fit: cover;      /* photo propre */
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,0.06);
+  background: #fff;
+  display: block;
+}
+

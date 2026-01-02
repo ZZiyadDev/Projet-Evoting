@@ -35,64 +35,147 @@ if ($district_id) {
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-    <title>Candidate Campaigns</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Campagnes des candidats</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="assets/css/style.css?v=1">
 </head>
+
 <body class="bg-light">
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="vote.php">🗳️ E-Voting Portal</a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="btn btn-outline-light" href="vote.php">← Back to Voting</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+      <a class="navbar-brand" href="vote.php">🗳️ Portail E-Voting</a>
 
-    <div class="container mt-4">
-        <div class="text-center mb-4">
-            <h1><i class="bi bi-megaphone-fill"></i> Candidate Campaigns</h1>
-            <p class="lead">Showing candidates for your electoral district: <strong class="text-primary"><?php echo htmlspecialchars($district_name); ?></strong></p>
-        </div>
-        <hr class="mb-4">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCampaigns"
+              aria-controls="navbarCampaigns" aria-expanded="false" aria-label="Menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-        <?php if (!empty($candidates)): ?>
-            <div class="row g-4">
-            <?php foreach ($candidates as $candidate): ?>
-                <div class="col-12">
-                    <div class="card shadow-sm">
-                        <div class="row g-0">
-                            <div class="col-md-3 d-flex align-items-center justify-content-center p-3">
-                                <?php 
-                                $photo = !empty($candidate['photo_path']) ? htmlspecialchars($candidate['photo_path']) : 'https://via.placeholder.com/200?text=No+Photo';
-                                ?>
-                                <img src="<?php echo $photo; ?>" class="img-fluid rounded" alt="Candidate <?php echo htmlspecialchars($candidate['full_name']); ?>">
-                            </div>
-                            <div class="col-md-9">
-                                <div class="card-body">
-                                    <h4 class="card-title"><?php echo htmlspecialchars($candidate['full_name']); ?></h4>
-                                    <h6 class="card-subtitle mb-2 text-muted"><?php echo htmlspecialchars($candidate['party_name']); ?> (Rank <?php echo $candidate['rank']; ?>)</h6>
-                                    <hr>
-                                    <p class="card-text" style="white-space: pre-wrap;"><?php echo !empty($candidate['description']) ? htmlspecialchars($candidate['description']) : 'This candidate has not provided a manifesto.'; ?></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-            </div>
-        <?php elseif ($district_id): ?>
-            <div class="alert alert-info text-center">There are no candidates registered in your district yet.</div>
-        <?php else: ?>
-            <div class="alert alert-warning text-center">Your account is not assigned to a district. Please contact an administrator.</div>
-        <?php endif; ?>
+      <div class="collapse navbar-collapse" id="navbarCampaigns">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="btn btn-outline-light" href="vote.php">
+              <i class="bi bi-arrow-left"></i> Retour au vote
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mt-4">
+
+    <div class="text-center mb-4">
+      <h1 class="mb-2"><i class="bi bi-megaphone-fill"></i> Campagnes des candidats</h1>
+      <p class="lead mb-0">
+        Candidats de votre circonscription :
+        <strong class="text-primary"><?php echo htmlspecialchars($district_name); ?></strong>
+      </p>
     </div>
 
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body d-flex align-items-center gap-2">
+        <i class="bi bi-info-circle text-primary"></i>
+        <div class="text-muted">
+          Consultez les programmes/manifestes avant de voter.
+        </div>
+      </div>
+    </div>
+
+    <?php if (!empty($candidates)): ?>
+      <div class="row g-4">
+        <?php foreach ($candidates as $candidate): ?>
+
+         <?php
+$fallback = "https://via.placeholder.com/300x300?text=Aucune+photo";
+
+$raw = trim((string)($candidate['photo_path'] ?? ''));
+$raw = str_replace('\\', '/', $raw);
+
+if ($raw === '') {
+  $photo = $fallback;
+} elseif (preg_match('~^https?://~i', $raw)) {
+  $photo = $raw;                 // already absolute URL
+} else {
+  $photo = $raw;                 // keep RELATIVE: uploads/... (no leading /)
+}
+
+$photo = htmlspecialchars($photo);
+$fullName = htmlspecialchars($candidate['full_name']);
+$partyName = htmlspecialchars($candidate['party_name']);
+$rank = (int)$candidate['rank'];
+$desc = !empty($candidate['description'])
+  ? htmlspecialchars($candidate['description'])
+  : "Ce candidat n’a pas encore fourni de manifeste.";
+?>
+
+
+          <div class="col-12">
+            <div class="card border-0 shadow-sm overflow-hidden">
+              <div class="row g-0">
+
+                <div class="col-md-3 p-3 d-flex align-items-center justify-content-center bg-light">
+                  <img
+                    src="<?php echo $photo; ?>"
+                    class="candidate-photo"
+                    alt="Photo de <?php echo $fullName; ?>"
+                    onerror="this.onerror=null;this.src='<?php echo $fallback; ?>';"
+                  >
+                </div>
+
+                <div class="col-md-9">
+                  <div class="card-body p-4">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-2">
+                      <div>
+                        <h4 class="card-title mb-1"><?php echo $fullName; ?></h4>
+                        <div class="text-muted">
+                          <i class="bi bi-flag"></i>
+                          <?php echo $partyName; ?>
+                          <span class="mx-2">•</span>
+                          <i class="bi bi-list-ol"></i>
+                          Rang <?php echo $rank; ?>
+                        </div>
+                      </div>
+
+                      <span class="badge rounded-pill text-bg-light border">
+                        <i class="bi bi-geo-alt"></i>
+                        Circonscription
+                      </span>
+                    </div>
+
+                    <hr class="my-3">
+
+                    <p class="card-text mb-0" style="white-space: pre-wrap;">
+                      <?php echo $desc; ?>
+                    </p>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        <?php endforeach; ?>
+      </div>
+
+    <?php elseif (!empty($district_id)): ?>
+      <div class="alert alert-info text-center">
+        Aucun candidat n’est encore enregistré dans votre circonscription.
+      </div>
+    <?php else: ?>
+      <div class="alert alert-warning text-center">
+        Votre compte n’est pas associé à une circonscription. Veuillez contacter un administrateur.
+      </div>
+    <?php endif; ?>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

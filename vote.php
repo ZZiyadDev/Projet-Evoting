@@ -43,100 +43,134 @@ if (!$has_voted && !empty($district_id)) {
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-    <title>Voting Page</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="assets/css/style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Page de vote</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="assets/css/style.css">
 </head>
+
 <body class="bg-light">
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="#">🗳️ E-Voting Portal</a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><span class="navbar-text me-3">Welcome, <?php echo htmlspecialchars($_SESSION['name']); ?></span></li>
-                    <li class="nav-item"><a class="btn btn-outline-light" href="logout.php">Logout</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+      <a class="navbar-brand" href="#">🗳️ Portail E-Voting</a>
 
-    <div class="container mt-4">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarVote"
+              aria-controls="navbarVote" aria-expanded="false" aria-label="Menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-        <?php
-        // Display status message from session if it exists
-        if (isset($_SESSION['vote_status_message'])) {
-            $message_type = $_SESSION['vote_status_type'] ?? 'info';
-            echo "<div class='alert alert-{$message_type} alert-dismissible fade show' role='alert'>";
-            echo $_SESSION['vote_status_message'];
-            echo '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
-            echo "</div>";
-            // Unset the session variables so the message doesn't linger
-            unset($_SESSION['vote_status_message']);
-            unset($_SESSION['vote_status_type']);
-        }
-        ?>
-
-        <?php if ($has_voted == 1): ?>
-        
-            <div class="text-center p-5 bg-white rounded shadow">
-                <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
-                <h2 class="mt-3">You have already voted.</h2>
-                <p class="lead">Thank you for your participation in the election.</p>
-                <a href="results.php" class="btn btn-primary mt-3">View Live Results</a>
-            </div>
-
-        <?php elseif (empty($district_id)): ?>
-             <div class="alert alert-warning text-center">
-                Your user account is not assigned to an electoral district. Please contact an administrator.
-            </div>
-        <?php else: ?>
-
-            <div class="text-center mb-4">
-                <h2>Your Electoral District: <span class="text-primary"><?php echo htmlspecialchars($district_name); ?></span></h2>
-                <p class="lead">Please cast your vote for one of the following political parties.</p>
-            </div>
-
-            <div class="alert alert-secondary text-center">
-                Unsure who to vote for? <a href="campaigns.php" class="alert-link">Click here to read about the candidates</a> running in your district.
-            </div>
-            
-            <div class="row g-4 justify-content-center">
-            <?php if (!empty($parties)): ?>
-                <?php foreach ($parties as $party): ?>
-                    <div class="col-md-4 col-lg-3">
-                        <div class="card h-100 text-center party-card">
-                            <div class="card-body">
-                                <?php 
-                                $logo = !empty($party['logo_path']) ? htmlspecialchars($party['logo_path']) : 'https://via.placeholder.com/80?text=Logo';
-                                ?>
-                                <img src="<?php echo $logo; ?>" alt="<?php echo htmlspecialchars($party['name']); ?> Logo" class="party-logo my-3">
-                                <h5 class="card-title"><?php echo htmlspecialchars($party['name']); ?></h5>
-                                <?php if (!empty($party['description'])): ?>
-                                    <p class="card-text text-muted"><?php echo htmlspecialchars($party['description']); ?></p>
-                                <?php endif; ?>
-                            </div>
-                            <div class="card-footer bg-white border-0">
-                                <a href="submit_vote.php?party_id=<?php echo $party['id']; ?>" class="btn btn-success w-100" onclick="return confirm('Are you sure you want to vote for <?php echo htmlspecialchars($party['name']); ?>?');">
-                                    VOTE
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-             <?php else: ?>
-                <div class="alert alert-info text-center">
-                    There are currently no political parties registered to run in your district.
-                </div>
-            <?php endif; ?>
-            </div>
-
-        <?php endif; ?>
-
+      <div class="collapse navbar-collapse" id="navbarVote">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-2">
+          <li class="nav-item">
+            <span class="navbar-text text-white me-lg-3">
+              Bienvenue, <?php echo htmlspecialchars($_SESSION['name']); ?>
+            </span>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-outline-light" href="logout.php">Déconnexion</a>
+          </li>
+        </ul>
+      </div>
     </div>
+  </nav>
 
+  <div class="container mt-4">
+
+    <?php
+    if (isset($_SESSION['vote_status_message'])) {
+      $message_type = $_SESSION['vote_status_type'] ?? 'info';
+      echo "<div class='alert alert-{$message_type} alert-dismissible fade show' role='alert'>";
+      echo $_SESSION['vote_status_message'];
+      echo '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>';
+      echo "</div>";
+      unset($_SESSION['vote_status_message'], $_SESSION['vote_status_type']);
+    }
+    ?>
+
+    <?php if ($has_voted == 1): ?>
+
+      <div class="text-center p-5 bg-white rounded shadow">
+        <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+        <h2 class="mt-3">Vous avez déjà voté.</h2>
+        <p class="lead">Merci pour votre participation à l’élection.</p>
+        <a href="results.php" class="btn btn-primary mt-3">Voir les résultats en direct</a>
+      </div>
+
+    <?php elseif (empty($district_id)): ?>
+
+      <div class="alert alert-warning text-center">
+        Votre compte n’est pas associé à une circonscription électorale. Veuillez contacter un administrateur.
+      </div>
+
+    <?php else: ?>
+
+      <div class="text-center mb-4">
+        <h2>Votre circonscription : <span class="text-primary"><?php echo htmlspecialchars($district_name); ?></span></h2>
+        <p class="lead">Veuillez voter pour l’un des partis politiques suivants.</p>
+      </div>
+
+      <div class="alert alert-secondary text-center">
+        Vous hésitez ? <a href="campaigns.php" class="alert-link">Cliquez ici</a> pour lire les programmes des candidats de votre circonscription.
+      </div>
+
+      <div class="row g-4 justify-content-center">
+        <?php if (!empty($parties)): ?>
+          <?php foreach ($parties as $party): ?>
+
+            <?php
+              // Chemin logo sécurisé + fallback
+              $fallback = "https://via.placeholder.com/80?text=Logo";
+              $logo = ltrim($party['logo_path'], '/');
+              $logo = htmlspecialchars($logo);
+              $partyName = htmlspecialchars($party['name']);
+            ?>
+
+            <div class="col-12 col-md-4 col-lg-3">
+              <div class="card h-100 text-center party-card">
+                <div class="card-body">
+                  <img
+                    src="<?php echo $logo; ?>"
+                    alt="Logo <?php echo $partyName; ?>"
+                    class="party-logo my-3"
+                    onerror="this.onerror=null;this.src='<?php echo $fallback; ?>';"
+                  >
+                  <h5 class="card-title"><?php echo $partyName; ?></h5>
+
+                  <?php if (!empty($party['description'])): ?>
+                    <p class="card-text text-muted"><?php echo htmlspecialchars($party['description']); ?></p>
+                  <?php endif; ?>
+                </div>
+
+                <div class="card-footer bg-white border-0">
+                  <a
+                    href="submit_vote.php?party_id=<?php echo (int)$party['id']; ?>"
+                    class="btn btn-success w-100"
+                    onclick="return confirm('Confirmez-vous votre vote pour <?php echo $partyName; ?> ?');"
+                  >
+                    Voter
+                  </a>
+                </div>
+              </div>
+            </div>
+
+          <?php endforeach; ?>
+        <?php else: ?>
+          <div class="alert alert-info text-center">
+            Aucun parti politique n’est actuellement enregistré dans votre circonscription.
+          </div>
+        <?php endif; ?>
+      </div>
+
+    <?php endif; ?>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -55,65 +55,68 @@ if (isset($_POST['register'])) {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Inscription de l'électeur</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Inscription de l'électeur</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
 </head>
+
 <body class="auth-page">
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-6 col-lg-5">
 
-    <div class="card auth-card">
-        <div class="row justify-content-center">
-            <div class="col-md-6 col-lg-5">
-                <div class="card auth-card">
-                    <div class="card-header bg-primary text-white text-center">
-                        <h4>Inscription de l'électeur</h4>
-                    </div>
-                    <div class="card-body p-4">
-                        
-                        <?php echo $message; ?>
+        <div class="card auth-card">
+          <div class="card-header bg-primary text-white text-center">
+            <h4 class="mb-0">Inscription de l'électeur</h4>
+          </div>
 
-                        <form method="post">
-                            <div class="mb-3">
-                                <label class="form-label">Nom complet</label>
-                                <input type="text" name="fullname" class="form-control" required>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label class="form-label">Nom d'utilisateur</label>
-                                <input type="text" name="username" class="form-control" required>
-                            </div>
+          <div class="card-body p-4">
+            <?php echo $message; ?>
 
-                            <div class="mb-3">
-                                <label class="form-label">Mot de passe</label>
-                                <input type="password" name="password" class="form-control" required>
-                            </div>
+            <form method="post">
+              <div class="mb-3">
+                <label class="form-label">Nom complet</label>
+                <input type="text" name="fullname" class="form-control" required>
+              </div>
 
-                            <div class="mb-3">
-                                <label for="district_id" class="form-label">Circonscription électorale</label>
-                                <select class="form-select" id="district_id" name="district_id" required>
-                                    <option value="">-- Sélectionnez votre circonscription --</option>
-                                    <?php 
-                                    if (mysqli_num_rows($districts_result) > 0) {
-                                        while ($district = mysqli_fetch_assoc($districts_result)) {
-                                            echo "<option value='" . $district['id'] . "'>" . htmlspecialchars($district['name']) . "</option>";
-                                        }
-                                    }
-                                    ?>
-                                </select>
-                            </div>
+              <div class="mb-3">
+                <label class="form-label">Nom d'utilisateur</label>
+                <input type="text" name="username" class="form-control" required>
+              </div>
 
-                            <div class="d-grid">
-                                <button type="submit" name="register" class="btn btn-primary">Créer un compte</button>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="card-footer text-center">
-                        Vous avez déjà un compte ? <a href="index.php">Connectez-vous ici</a>
-                    </div>
-                </div>
-            </div>
+              <div class="mb-3">
+                <label class="form-label">Mot de passe</label>
+                <input type="password" name="password" class="form-control" required>
+              </div>
+
+              <div class="mb-3">
+                <label for="district_id" class="form-label">Circonscription électorale</label>
+                <select class="form-select" id="district_id" name="district_id" required>
+                  <option value="">-- Sélectionnez votre circonscription --</option>
+                  <?php 
+                  if (mysqli_num_rows($districts_result) > 0) {
+                    while ($district = mysqli_fetch_assoc($districts_result)) {
+                      echo "<option value='" . $district['id'] . "'>" . htmlspecialchars($district['name']) . "</option>";
+                    }
+                  }
+                  ?>
+                </select>
+              </div>
+
+              <div class="d-grid">
+                <button type="submit" name="register" class="btn btn-primary">Créer un compte</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="card-footer text-center">
+            Vous avez déjà un compte ? <a href="index.php">Connectez-vous ici</a>
+          </div>
         </div>
-    </div>
 
+      </div>
+    </div>
+  </div>
 </body>
 </html>
